@@ -2,8 +2,7 @@ library(Biostrings)
 
 ### Árbol filogenético
 
-### Descargue y abri como stringset los 10 organismos mas cercanos del blastn
-
+### Abrí mi documento fasta 
 readDNAStringSet("Secuencias_AMMR/todos_los_virus.fasta") -> virus
 
 ### Corroboré que no hubieran caracteres especiales 
@@ -24,7 +23,7 @@ virus_clustalw
 virus_muscle <- msa(virus, method = "Muscle")
 virus_muscle
 
-### Convertí el alineamiento
+### Convertí el alineamiento en un formato que pudiera utilizar para hacer una matriz de distancias
 
 virus_alineado_clustalw <- msaConvert(virus_clustalw, type = "seqinr::alignment")
 
@@ -51,10 +50,10 @@ library(ape)
 
 ### El árbol lo guarde en formato PDF, en resultados.
 
-pdf("Resultados_AMMR/arbol_filogenetico_virus_clustalw", width = 8, height = 5)
+pdf("Resultados_AMMR/arbol_filogenetico_virus_clustalw.pdf", width = 8, height = 5)
 
-### Creé un árbol filogenético utilizando el método Neighbor-Joining
-### a partir de la matriz de distancias
+### Creé un árbol filogenético utilizando el método Neighbor-Joining, primero con
+### el alineamiento de clustalw a partir de la matriz de distancias
 
 arbol_filogenetico_virus <- nj(matriz_dist_clustalw)
 
@@ -70,10 +69,10 @@ plot( arbol_filogenetico_virus,
 
 dev.off()
 
-pdf("Resultados_AMMR/arbol_filogenetico_virus_muscle", width = 8, height = 5)
+pdf("Resultados_AMMR/arbol_filogenetico_virus_muscle.pdf", width = 8, height = 5)
 
-### Creé un árbol filogenético utilizando el método Neighbor-Joining
-### a partir de la matriz de distancias
+### Creé un árbol filogenético utilizando el método Neighbor-Joining ahoara 
+### para el alineamiento de muscle, a partir de la matriz de distancias
 
 arbol_filogenetico_virus2 <- nj(matriz_dist_muscle)
 

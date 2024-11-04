@@ -1,11 +1,11 @@
 {
     "id": "3028D3FB",
-    "path": "~/Bioinformática/árbol_filogenético/Scripts_AMRR/Script_para_hacer_un_arbol.R",
+    "path": "~/Bioinformática/arbol_filogenetico/Scripts_AMRR/Script_para_hacer_un_arbol.R",
     "project_path": "Scripts_AMRR/Script_para_hacer_un_arbol.R",
     "type": "r_source",
-    "hash": "2990177542",
+    "hash": "0",
     "contents": "",
-    "dirty": false,
+    "dirty": true,
     "created": 1730753964206.0,
     "source_on_save": false,
     "relative_order": 1,
@@ -13,15 +13,15 @@
         "tempName": "Untitled1",
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "0,0",
-        "scrollLine": "0"
+        "cursorPosition": "89,0",
+        "scrollLine": "73"
     },
     "folds": "",
-    "lastKnownWriteTime": 1730755036,
+    "lastKnownWriteTime": 1730758779,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1730755036591,
+    "last_content_update": 1730759333729,
     "read_only": false,
     "read_only_alternatives": []
 }

@@ -1,0 +1,147 @@
+# 6. Jurassic Park
+
+## A partir del archivo FASTA llamado DinoJurassic.fna. 
+## Esta secuencia la puse en formato FASTA y es la secuencia que aparece en el 
+## libro de Michael Crichton Jurassic Park de 1993.
+
+### (a) Lee el archivo en R y calcula el porcentaje de GC y de C seguidas de G.
+
+### (b) Blastea la secuencia, determina e interpreta tu resultado. 
+### ¿Cuáles serían los organismos más cercanos? ¿Tiene sentido que la secuencia 
+## sea de dinosaurios?
+  
+### (c) Elabora una gráfica de e-values y los organismos más cercanos.
+
+### (d) Elabora un árbol filogenético con los 10 organismos más cercanos.
+
+#------------------------------------------------------------------------------#
+
+library(Biostrings)
+
+readDNAStringSet("Secuencias_T2/secuencia_dino_jurassic.fasta") -> DNA_dino
+
+### Calcule la frecuencia en la que aparecen las letras C y G en la secuencia de DNA
+
+letterFrequency(DNA_dino, c("G", "C")) -> gc_DNA_dino
+
+### después calcule la frecuencia de cada uno de los nucleótidos
+
+letterFrequency(DNA_dino, c("A", "T", "G", "C")) -> total_bases_DNA_dino
+
+### posteriormente saque el porcentaje tomando en cuenta los datos anteriores.
+
+porcentaje_gc <- (sum(gc_DNA_dino) / sum(total_bases_DNA_dino))*100
+porcentaje_gc
+
+### Para saber cuantas veces aparece el C seguida de G utilice la función, vcountPattern
+
+vcountPattern("CG",DNA_dino)
+
+
+#------------------------------------------------------------------------------#
+
+
+### En el blast las secuencias más cercanas son vectores de clonación, es decir,
+### secuencias artificiales, por lo tanto, no tienen relación con los dinosaurios
+### es probable que esta también sea una secuencia artificial.
+
+
+### Gráfica de los e-valores de los organismos más cercanos 
+### Utilice la liberia ggplot2 que es especial para realizar gráficas 
+
+library(ggplot2)
+
+### Creé un data frame con los números de acceso y el e-value de cada organismo
+
+datos_dino_blast <- data.frame(
+  Organismo = c("AB477343.1", "EF456758.1", "JQ394798.1", "KC820640.1", 
+                "LT727571.1", "AF316555.1", "JN204876.1", "U13863.1", 
+                "U46855.1", "MN386081.1"),
+  e_value = c(1e-116, 1e-116, 1e-116, 1e-116, 
+              1e-116, 1e-116, 1e-116, 1e-116, 
+              1e-116, 1e-116))  
+
+  
+### Hice una grafica de barraras con la funcion geom_bar()
+
+pdf("Resultados_T2/gráfica_E-values_Martinez_Melissa_T2_P6.pdf", width = 8, height = 5)
+
+ggplot(datos_dino_blast, aes(x = Organismo, y = e_value)) +
+  geom_bar(stat = "identity") + 
+  labs(title = "E-values de los organismos más cercanos", # para poner un titulo
+       x = "Organismos", # nombrar el eje de las x
+       y = "E-value")  # nombrar el eje de las y
+
+
+dev.off()
+
+
+#------------------------------------------------------------------------------#
+
+
+### Árbol filogenético
+
+### Descargue y abri como stringset los 10 organismos mas cercanos del blastn
+
+readDNAStringSet("Secuencias_T2/Organismos_cercanos_dino_blast.fasta") -> Organismos_cercanos_dino
+
+### Corroboré que no hubieran caracteres especiales 
+
+alphabetFrequency(Organismos_cercanos_dino)
+
+### Utilicé msa para hacer el alineamiento de las secuencias de DNA
+
+library(msa)
+
+### Alineé las secuencias con clustalW
+
+cercanos_dino_clustalw <- msa(Organismos_cercanos_dino, method = "ClustalW")
+cercanos_dino_clustalw
+
+### Convertí el alineamiento a StringSet para poder hacer después la matriz de distancias
+
+dino_alineado <- DNAStringSet(cercanos_dino_clustalw)
+dino_alineado
+
+library(DECIPHER)
+
+### Objeto utilizado para la matriz de distancias 
+
+cercanos_dino_clustalw
+
+### Con la función DistanceMatrix hice la matriz de distancias por el método overlap
+
+matriz_distancias_dino <- DistanceMatrix(dino_alineado, method = "overlap")  
+
+View(matriz_distancias_dino)
+
+### Guardé la matriz de distancias en un archivo CSV
+
+write.csv(matriz_distancias_dino,"Resultados_T2/matriz_distancias_dino_T2_P6_Martinez_Melissa")
+
+
+### La librería ape, disponible en Bioconductor, permite generar árboles filogenéticos
+
+library(ape)
+
+### El árbol lo guarde en formato PDF, en resultados.
+
+pdf("Resultados_T2/arbol_filogenetico_Martinez_Melissa_T2_P6.pdf", width = 8, height = 5)
+
+### Creé un árbol filogenético utilizando el método Neighbor-Joining
+### a partir de la matriz de distancias
+
+arbol_filogenetico_dino <- nj(matriz_distancias_dino)
+
+### Esta función nos ayuda a personalizar el árbol.
+
+plot( arbol_filogenetico_dino, 
+      cex = 0.6, # tamaño de letra
+      type = "cladogram", # tipo de arbol
+      tip.color = "darkblue", # color de letra
+      edge.color = "pink", # color de ramas    
+      edge.width = 3) # tamaño de ramas
+
+
+dev.off()
+
