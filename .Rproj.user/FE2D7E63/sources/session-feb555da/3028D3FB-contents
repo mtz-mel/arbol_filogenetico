@@ -88,3 +88,33 @@ plot( arbol_filogenetico_virus2,
 
 dev.off()
 
+## Nuevo arbol usando ggtree
+
+arbol_filogenetico_virus_clustalw <- nj(matriz_dist_clustalw)
+
+library(ggplot2)  
+library(ggtree)
+
+## Arbol con ggtree "normal"
+
+ggtree_plot <- ggtree(arbol_filogenetico_virus_clustalw) +
+  geom_tiplab(size = 5, color = "darkblue") +  
+  geom_tree(color = "green", size = 3) +   
+  xlim(0,0.5)
+
+## Guardar en PDF
+ggsave("Resultados_AMMR/arbol_filogenetico_virus_clustalw_ggtree.pdf",
+       plot = ggtree_plot, width = 40, height = 15)
+
+## Arbol circular
+
+ggtree_plot <- ggtree(arbol_filogenetico_virus_clustalw, layout = "circular") +
+  geom_tiplab(size = 3, color = "purple") +
+  geom_tree(color = "pink", size = 1) +
+  xlim(0,0.5)
+
+## Guardar el arbol circular
+
+ggsave("Resultados_AMMR/arbol_filogenetico_virus_clustalw_ggtree_circular.pdf", 
+       plot = ggtree_plot, width = 20, height = 20) 
+
